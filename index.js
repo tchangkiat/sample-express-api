@@ -7,8 +7,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+var serverIP;
+
 app.get("/", function (req, res) {
-  res.send("Hello World!");
+  res.send("Running at http://" + serverIP + ":" + port);
 });
 
 app.use(function (err, req, res, next) {
@@ -20,4 +22,7 @@ app.use(function (req, res, next) {
   res.status(404).send("Unable to find API");
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+var server = app.listen(port, function () {
+  serverIP = server.address().address;
+  console.log("Running at http://" + serverIP + ":" + port);
+});
