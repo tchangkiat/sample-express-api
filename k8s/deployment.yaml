@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-express-api
+  labels:
+    app: sample-express-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-express-api
+  template:
+    metadata:
+      labels:
+        app: sample-express-api
+    spec:
+      containers:
+        - name: sample-express-api
+          image: gcr.io/[project name]/sample-express-api:[latest tag value]
+          ports:
+            - containerPort: 8000
