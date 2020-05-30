@@ -10,7 +10,7 @@ app.use(cors());
 var serverIP;
 
 app.get("/", function (req, res) {
-  res.send("Running at http://" + serverIP + ":" + port);
+  res.send("Running at http://" + serverIP + ":" + port + "<p/> v1");
 });
 
 app.use(function (err, req, res, next) {
