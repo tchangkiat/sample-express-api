@@ -17,8 +17,7 @@ app.get("/", function (req, res) {
         : undefined
     );
   }
-  console.log();
-  res.send(`IP Address: ${address} <p/>v1`);
+  res.send(`IP Address: ${address} <p/>v20200601`);
 });
 
 app.use(function (err, req, res, next) {
