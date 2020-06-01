@@ -21,6 +21,6 @@ spec:
     spec:
       containers:
         - name: sample-express-api
-          image: gcr.io/[project-name]/sample-express-api:[tag]
+          image: [URL]
           ports:
             - containerPort: 8000
