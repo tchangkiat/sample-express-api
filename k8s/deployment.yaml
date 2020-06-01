@@ -6,6 +6,11 @@ metadata:
     app: sample-express-api
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 50%
   selector:
     matchLabels:
       app: sample-express-api
@@ -16,6 +21,13 @@ spec:
     spec:
       containers:
         - name: sample-express-api
-          image: gcr.io/[project name]/sample-express-api
+          image: gcr.io/[project name]/sample-express-api:[tag]
           ports:
             - containerPort: 8000
+            readinessProbe:
+              httpGet:
+                 path: /
+                 port: 8000
+                 initialDelaySeconds: 5
+                 periodSeconds: 5
+                 successThreshold: 1

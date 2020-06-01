@@ -1,23 +1,24 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 8000;
-var cors = require("cors");
+const si = require("systeminformation");
+const cors = require("cors");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get("/", function (req, res) {
-  var address,
-    ifaces = require("os").networkInterfaces();
-  for (var dev in ifaces) {
-    ifaces[dev].filter((details) =>
-      details.family === "IPv4" && details.internal === false
-        ? (address = details.address)
-        : undefined
-    );
-  }
-  res.send(`IP Address: ${address} <p/>v20200601`);
+app.get("/", async function (req, res) {
+  const cpu = await si.cpu();
+  const os = await si.osInfo();
+  const ni = await si.networkInterfaces();
+  const mem = await si.mem();
+  res.send(`Host Name: ${os.hostname}<p/>
+    IP Address: ${ni[0].ip4}<p/>
+    CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} (${cpu.cores} cores)<p/>
+    OS: ${os.distro} ${os.release} ${os.codename}<p/>
+    Memory: ${mem.total / 1000000000} GB<p/>
+    v20200601`);
 });
 
 app.use(function (err, req, res, next) {
