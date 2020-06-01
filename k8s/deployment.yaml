@@ -21,13 +21,6 @@ spec:
     spec:
       containers:
         - name: sample-express-api
-          image: gcr.io/[project name]/sample-express-api:[tag]
+          image: gcr.io/[project-name]/sample-express-api:[tag]
           ports:
             - containerPort: 8000
-            readinessProbe:
-              httpGet:
-                 path: /
-                 port: 8000
-                 initialDelaySeconds: 5
-                 periodSeconds: 5
-                 successThreshold: 1
