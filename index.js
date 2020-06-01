@@ -11,10 +11,18 @@ app.use(cors());
 app.get("/", async function (req, res) {
   const cpu = await si.cpu();
   const os = await si.osInfo();
-  const ni = await si.networkInterfaces();
   const mem = await si.mem();
+  var address,
+    ifaces = require("os").networkInterfaces();
+  for (var dev in ifaces) {
+    ifaces[dev].filter((details) =>
+      details.family === "IPv4" && details.internal === false
+        ? (address = details.address)
+        : undefined
+    );
+  }
   res.send(`Host Name: ${os.hostname}<p/>
-    IP Address: ${ni[0].ip4}<p/>
+    IP Address: ${address}<p/>
     CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} (${cpu.cores} cores)<p/>
     OS: ${os.distro} ${os.release} ${os.codename}<p/>
     Memory: ${mem.total / 1000000000} GB<p/>
