@@ -1,11 +1,14 @@
-FROM node:lts-alpine
+FROM node:lts
 LABEL name "sample-express-api"
 
 # Change working directory
 WORKDIR "/app"
 
-# Update packages
-RUN apk update
+# Update packages and install dependency packages for services
+RUN apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get clean \
+    && echo 'Finished installing dependencies'
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
