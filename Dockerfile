@@ -1,13 +1,28 @@
-FROM node:latest
+FROM node:lts
+LABEL name "sample-express-api"
 
-WORKDIR usr/src/app
+# Change working directory
+WORKDIR "/app"
 
+# Update packages and install dependency packages for services
+RUN apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get clean \
+    && echo 'Finished installing dependencies'
+
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN npm install
+# Install npm production packages 
+RUN npm install --production
 
 COPY . .
 
+ENV NODE_ENV production
+ENV PORT 8000
+
 EXPOSE 8000
 
-CMD ["node","index.js"]
+USER node
+
+CMD [ "node",  "index.js" ]
