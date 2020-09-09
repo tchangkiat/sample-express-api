@@ -21,6 +21,9 @@ const limiter = rateLimit({
 app.use(limiter);
 app.set("trust proxy", 1); // Enable if you're behind a reverse proxy
 
+const hpp = require("hpp"); // Prevent HTTP Parameter Pollution
+app.use(hpp());
+
 const si = require("systeminformation");
 
 const port = process.env.PORT || 8000;
