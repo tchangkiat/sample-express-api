@@ -1,25 +1,29 @@
-var compression = require("compression");
+// Middlewares
 const express = require("express");
-const helmet = require("helmet");
-const si = require("systeminformation");
-const cors = require("cors");
-const rateLimit = require("express-rate-limit");
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+const compression = require("compression"); // Compress response body
+app.use(compression());
+
+const helmet = require("helmet"); // Helps to secure this app by setting various HTTP headers
+app.use(helmet());
+
+const cors = require("cors");
+app.use(cors());
+
+const rateLimit = require("express-rate-limit"); // Limit repeated requests to APIs
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
 });
-
-const app = express();
-const port = process.env.PORT || 8000;
-
-app.set("trust proxy", 1);
 app.use(limiter);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.use(helmet());
-app.use(compression());
+app.set("trust proxy", 1); // Enable if you're behind a reverse proxy
+
+const si = require("systeminformation");
+
+const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
   const cpu = await si.cpu();
