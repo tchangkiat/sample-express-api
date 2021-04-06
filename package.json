@@ -26,6 +26,6 @@
     "helmet": "^4.1.0",
     "hpp": "^0.2.3",
     "nodemon": "^2.0.4",
-    "systeminformation": "^4.27.3"
+    "systeminformation": "^5.6.4"
   }
 }
