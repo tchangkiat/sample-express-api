@@ -28,9 +28,7 @@ const si = require("systeminformation");
 const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
-  const cpu = await si.cpu();
-  const os = await si.osInfo();
-  const mem = await si.mem();
+  let [cpu, mem, graphics, os] = await Promise.all([si.cpu(), si.mem(), si.graphics(), si.osInfo()]);
   var address,
     ifaces = require("os").networkInterfaces();
   for (var dev in ifaces) {
@@ -42,10 +40,11 @@ app.get("/", async function (req, res) {
   }
   res.send(`Host Name: ${os.hostname}<p/>
     IP Address: ${address}<p/>
-    CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} (${cpu.cores} cores)<p/>
-    OS: ${os.distro} ${os.release} ${os.codename}<p/>
+    CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)<p/>
     Memory: ${mem.total / 1000000000} GB<p/>
-    v20200601`);
+    Graphics: ${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})<p/>
+    OS: ${os.distro} ${os.release} ${os.codename} ${os.kernel}<p/>
+    v20211106`);
 });
 
 app.use(function (err, req, res, next) {
