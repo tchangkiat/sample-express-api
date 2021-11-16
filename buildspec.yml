@@ -1,4 +1,9 @@
-# Build Specifications for AWS CodeBuild
+# Build Specifications for AWS CodeBuild - https://docs.aws.amazon.com/codebuild/latest/userguide/sample-docker.html
+# Environment Variables to be configured in CodeBuild Project
+# - $AWS_DEFAULT_REGION: Region code, e.g. ap-southeast-1
+# - $AWS_ACCOUNT_ID: 12-digit account ID
+# - $IMAGE_REPO: ECR registry name
+# - $IMAGE_TAG: Usually a version number or "latest"
 
 version: 0.2
 
