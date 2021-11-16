@@ -38,11 +38,12 @@ app.get("/", async function (req, res) {
         : undefined
     );
   }
+  var graphicsInfo = graphics.controllers.length > 0 ? `Graphics: ${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})<p/>` : "";
   res.send(`Host Name: ${os.hostname}<p/>
     IP Address: ${address}<p/>
     CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)<p/>
     Memory: ${mem.total / 1000000000} GB<p/>
-    Graphics: ${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})<p/>
+    ${graphicsInfo}
     OS: ${os.distro} ${os.release} ${os.codename} ${os.kernel}<p/>
     v20211106`);
 });
