@@ -38,14 +38,68 @@ app.get("/", async function (req, res) {
         : undefined
     );
   }
-  var graphicsInfo = graphics.controllers.length > 0 ? `Graphics: ${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})<p/>` : "";
-  res.send(`Host Name: ${os.hostname}<p/>
-    IP Address: ${address}<p/>
-    CPU: ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)<p/>
-    Memory: ${mem.total / 1000000000} GB<p/>
-    ${graphicsInfo}
-    OS: ${os.distro} ${os.release} ${os.codename} ${os.kernel}<p/>
-    v20211106`);
+  var graphicsInfo = graphics.controllers.length > 0 ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})` : "";
+
+  var envVar = "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
+  for (var attr in process.env) {
+    envVar += "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
+  }
+  envVar += "</table>";
+
+  res.send(`
+    <h1>Host Information</h1>
+    <table cellpadding='10'>
+      <tr>
+        <td>
+          Host Name
+        </td>
+        <td>
+          ${os.hostname}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          IP Address
+        </td>
+        <td>
+          ${address}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          CPU
+        </td>
+        <td>
+          ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Memory
+        </td>
+        <td>
+          ${mem.total / 1000000000} GB
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Graphics
+        </td>
+        <td>
+          ${graphicsInfo}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          OS
+        </td>
+        <td>
+          ${os.distro} ${os.release} ${os.codename} ${os.kernel}
+        </td>
+      </tr>
+    </table>
+    <h1>Environment Variables</h1>
+    ${envVar}`);
 });
 
 app.use(function (err, req, res, next) {
