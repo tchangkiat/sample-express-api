@@ -102,6 +102,20 @@ app.get("/", async function (req, res) {
     ${envVar}`);
 });
 
+app.get("/log", async function (req, res) {
+  console.log("Deliberate Log");
+  res.status(200).send("Log");
+});
+
+app.get("/error", async function (req, res) {
+  console.error("Deliberate Error")
+  res.status(500).send("Error");
+});
+
+app.get("/crash", async function (req, res) {
+  throw "Crash";
+});
+
 app.use(function (err, req, res, next) {
   console.log(err.stack);
   res.status(500).send("An error has occurred");
