@@ -7,6 +7,9 @@
 
 version: 0.2
 
+batch:
+  fast-fail: false
+
 phases:
   pre_build:
     commands:
