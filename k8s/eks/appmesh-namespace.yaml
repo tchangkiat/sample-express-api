@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  labels:
+    mesh: default-mesh
+    appmesh.k8s.aws/sidecarInjectorWebhook: enabled
