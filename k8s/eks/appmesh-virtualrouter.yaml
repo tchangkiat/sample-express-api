@@ -9,12 +9,12 @@ spec:
         port: 80
         protocol: http
   routes:
-    - name: sample-express-api-route
+    - name: sample-express-api-service-route
       httpRoute:
         match:
           prefix: /
         action:
           weightedTargets:
             - virtualNodeRef:
-                name: sample-express-api
+                name: sample-express-api-service
               weight: 1
