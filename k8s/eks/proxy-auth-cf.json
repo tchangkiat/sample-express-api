@@ -1,0 +1,64 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Enable proxy authorization for App Mesh injector to add the sidecar containers to any pod deployed with a label specified",
+  "Parameters": {
+    "MeshName": {
+      "Type": "String",
+      "Description": "Name of Mesh in AWS App Mesh (e.g. default-mesh)"
+    },
+    "VirtualNodeName": {
+      "Type": "String",
+      "Description": "Name of Virtual Node in AWS App Mesh (e.g. sample-express-api-service_default)"
+    }
+  },
+  "Resources": {
+    "AppMeshProxyAuthPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "ManagedPolicyName": {
+          "Fn::Join": [
+            "-",
+            [
+              "AppMeshProxyAuth",
+              { "Ref": "MeshName" },
+              { "Ref": "VirtualNodeName" }
+            ]
+          ]
+        },
+        "Description": "Enable proxy authorization for App Mesh injector to add the sidecar containers to any pod deployed with a label specified",
+        "Path": "/",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "appmesh:StreamAggregatedResources",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:appmesh:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":mesh/",
+                      { "Ref": "MeshName" },
+                      "/virtualNode/",
+                      { "Ref": "VirtualNodeName" }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "Outputs": {
+      "AppMeshProxyAuthPolicyArn": {
+        "Value": { "Ref": "AppMeshProxyAuthPolicy" }
+      }
+    }
+  }
+}
