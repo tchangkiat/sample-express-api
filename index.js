@@ -27,7 +27,7 @@ const si = require("systeminformation");
 
 // For tracing in AWS X-Ray
 var AWSXRay = require('aws-xray-sdk');
-app.use(AWSXRay.express.openSegment('MyApp'));
+app.use(AWSXRay.express.openSegment('Sample Express API'));
 
 const port = process.env.PORT || 8000;
 
