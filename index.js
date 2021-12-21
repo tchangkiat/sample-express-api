@@ -25,6 +25,10 @@ app.use(hpp());
 
 const si = require("systeminformation");
 
+// For tracing in AWS X-Ray
+var AWSXRay = require('aws-xray-sdk');
+app.use(AWSXRay.express.openSegment('MyApp'));
+
 const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
@@ -124,6 +128,9 @@ app.use(function (err, req, res, next) {
 app.use(function (req, res, next) {
   res.status(404).send("Unable to find API");
 });
+
+// For tracing in AWS X-Ray
+app.use(AWSXRay.express.closeSegment());
 
 app.listen(port, function () {
   console.log("Listening at port " + port);
