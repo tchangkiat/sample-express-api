@@ -5,10 +5,6 @@
     "MeshName": {
       "Type": "String",
       "Description": "Name of Mesh in AWS App Mesh (e.g. default-mesh)"
-    },
-    "VirtualNodeName": {
-      "Type": "String",
-      "Description": "Name of Virtual Node in AWS App Mesh (e.g. sample-express-api-service_default)"
     }
   },
   "Resources": {
@@ -20,8 +16,7 @@
             "-",
             [
               "AppMeshProxyAuth",
-              { "Ref": "MeshName" },
-              { "Ref": "VirtualNodeName" }
+              { "Ref": "MeshName" }
             ]
           ]
         },
@@ -32,24 +27,8 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Action": "appmesh:StreamAggregatedResources",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:appmesh:",
-                      { "Ref": "AWS::Region" },
-                      ":",
-                      { "Ref": "AWS::AccountId" },
-                      ":mesh/",
-                      { "Ref": "MeshName" },
-                      "/virtualNode/",
-                      { "Ref": "VirtualNodeName" }
-                    ]
-                  ]
-                }
-              ]
+              "Action": ["appmesh:StreamAggregatedResources"],
+              "Resource": "*"
             }
           ]
         }
