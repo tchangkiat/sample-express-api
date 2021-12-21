@@ -54,11 +54,11 @@
           ]
         }
       }
-    },
-    "Outputs": {
-      "AppMeshProxyAuthPolicyArn": {
-        "Value": { "Ref": "AppMeshProxyAuthPolicy" }
-      }
+    }
+  },
+  "Outputs": {
+    "AppMeshProxyAuthPolicyArn": {
+      "Value": { "Ref": "AppMeshProxyAuthPolicy" }
     }
   }
 }
