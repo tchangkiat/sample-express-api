@@ -28,7 +28,7 @@ spec:
       labels:
         app: sample-express-api
     spec:
-      serviceAccountName: sample-express-api-service
+      serviceAccountName: sample-express-api-service-account
       containers:
         - name: sample-express-api
           image: [URL]
