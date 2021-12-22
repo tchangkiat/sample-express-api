@@ -12,12 +12,6 @@ spec:
       targetPort: 8000
   type: LoadBalancer
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: sample-express-api-service-account
-automountServiceAccountToken: false
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
