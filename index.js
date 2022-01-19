@@ -29,6 +29,14 @@ const si = require("systeminformation");
 var AWSXRay = require('aws-xray-sdk');
 app.use(AWSXRay.express.openSegment('Sample Express API'));
 
+var logger = require('fluent-logger')
+logger.configure('sample-express-api', {
+   host: 'localhost',
+   port: 2020,
+   timeout: 3.0,
+   reconnectInterval: 600000 // 10 minutes
+});
+
 const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
@@ -107,26 +115,33 @@ app.get("/", async function (req, res) {
 });
 
 app.get("/log", async function (req, res) {
-  console.log("Deliberate Log");
+  console.log("Trigger Log");
+  logger.emit("trigger-log", {record: 'This is a log'})
   res.status(200).send("Log");
 });
 
 app.get("/error", async function (req, res) {
-  console.error("Deliberate Error")
+  console.error("Trigger Error")
+  logger.emit("trigger-error", {record: 'This is an error'})
   res.status(500).send("Error");
 });
 
 app.get("/crash", async function (req, res) {
+  console.error("Trigger Crash")
+  logger.emit("trigger-crash", {record: 'App has crashed'})
   throw "Crash";
 });
 
 app.use(function (err, req, res, next) {
   console.log(err.stack);
+  logger.emit("error", {record: err.stack})
   res.status(500).send("An error has occurred");
 });
 
 app.use(function (req, res, next) {
-  res.status(404).send("Unable to find API");
+  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  logger.emit("not-found", {record: "Unable to find API - " + fullUrl})
+  res.status(404).send("Unable to find API - " + fullUrl);
 });
 
 // For tracing in AWS X-Ray
