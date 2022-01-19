@@ -32,7 +32,7 @@ app.use(AWSXRay.express.openSegment('Sample Express API'));
 var logger = require('fluent-logger')
 logger.configure('sample-express-api', {
    host: 'localhost',
-   port: 2020,
+   port: 24224,
    timeout: 3.0,
    reconnectInterval: 600000 // 10 minutes
 });
