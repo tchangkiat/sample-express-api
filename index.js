@@ -29,6 +29,20 @@ const si = require("systeminformation");
 var AWSXRay = require('aws-xray-sdk');
 app.use(AWSXRay.express.openSegment('Sample Express API'));
 
+// For winston logging
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp } = format;
+const timezoned = () => {
+    return new Date().toLocaleString('en-SG');
+}
+const log = createLogger({
+  format: combine(
+    timestamp({ format: timezoned }),
+    format.prettyPrint()
+  ),
+  transports: [new transports.Console()]
+});
+
 const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
@@ -107,27 +121,23 @@ app.get("/", async function (req, res) {
 });
 
 app.get("/log", async function (req, res) {
-  console.log("Trigger Log");
+  log.info("Trigger Log");
   res.status(200).send("Trigger Log");
 });
 
 app.get("/error", async function (req, res) {
-  console.error("Trigger Error")
+  log.error("Trigger Error")
   res.status(500).send("Trigger Error");
 });
 
 app.get("/crash", async function (req, res) {
-  console.error("Trigger Crash")
+  log.error("Trigger Crash")
   throw "Crash";
-});
-
-app.use(function (err, req, res, next) {
-  console.log(err.stack);
-  res.status(500).send("An error has occurred");
 });
 
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  log.warn("Unable to find API - " + fullUrl)
   res.status(404).send("Unable to find API - " + fullUrl);
 });
 
