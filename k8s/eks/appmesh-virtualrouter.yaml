@@ -1,7 +1,7 @@
 apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualRouter
 metadata:
-  namespace: default
+  namespace: sampleexpressapi
   name: sample-express-api-service-virtual-router
 spec:
   listeners:

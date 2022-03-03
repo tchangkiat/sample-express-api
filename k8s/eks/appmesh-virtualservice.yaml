@@ -2,9 +2,9 @@ apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualService
 metadata:
   name: sample-express-api-service
-  namespace: default
+  namespace: sampleexpressapi
 spec:
-  awsName: sample-express-api-service.default.svc.cluster.local
+  awsName: sample-express-api-service.sampleexpressapi.svc.cluster.local
   provider:
     virtualRouter:
       virtualRouterRef:

@@ -2,7 +2,7 @@ apiVersion: appmesh.k8s.aws/v1beta2
 kind: VirtualNode
 metadata:
   name: sample-express-api-service
-  namespace: default
+  namespace: sampleexpressapi
 spec:
   podSelector:
     matchLabels:
@@ -13,4 +13,4 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostname: sample-express-api-service.default.svc.cluster.local
+      hostname: sample-express-api-service.sampleexpressapi.svc.cluster.local

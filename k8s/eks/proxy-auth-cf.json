@@ -4,7 +4,7 @@
   "Parameters": {
     "MeshName": {
       "Type": "String",
-      "Description": "Name of Mesh in AWS App Mesh (e.g. default-mesh)"
+      "Description": "Name of Mesh in AWS App Mesh (e.g. sampleexpressapi-mesh)"
     }
   },
   "Resources": {
