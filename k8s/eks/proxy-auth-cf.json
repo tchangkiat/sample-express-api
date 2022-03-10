@@ -2,6 +2,10 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Enable proxy authorization for App Mesh injector to add the sidecar containers to any pod deployed with a label specified",
   "Parameters": {
+    "ClusterName": {
+      "Type": "String",
+      "Description": "Name of EKS Cluster"
+    },
     "MeshName": {
       "Type": "String",
       "Description": "Name of Mesh in AWS App Mesh (e.g. sampleexpressapi-mesh)"
@@ -16,6 +20,7 @@
             "-",
             [
               "AppMeshProxyAuth",
+              { "Ref": "ClusterName" },
               { "Ref": "MeshName" }
             ]
           ]
