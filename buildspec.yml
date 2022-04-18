@@ -23,7 +23,7 @@ phases:
   build:
     commands:
       - echo Running TruffleHog Secrets Scan
-      - trufflehog git $SOURCE_REPO_URL
+      - trufflehog --regex --max_depth 1 $SOURCE_REPO_URL
       - echo Scanning with Hadolint
       - docker run --rm -i hadolint/hadolint < Dockerfile
       - echo Build started on `date`
