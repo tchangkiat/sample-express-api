@@ -11,16 +11,21 @@ phases:
   install:
     commands:
       - yum update -y
-      - sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
-      - sudo chmod +x /bin/hadolint
+    runtime-versions:
+      docker: 20.10.14
+      python: 3.10.4
   pre_build:
     commands:
-      - echo Linting Dockerfile
-      - /bin/hadolint Dockerfile
       - echo Logging in to Amazon ECR
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Installing TruffleHog
+      - pip install TruffleHog
   build:
     commands:
+      - echo Running TruffleHog Secrets Scan
+      - trufflehog --regex $SOURCE_REPO_URL
+      - echo Scanning with Hadolint
+      - docker run --rm -i hadolint/hadolint < Dockerfile
       - echo Build started on `date`
       - echo Building the Docker image
       - docker build -t $IMAGE_REPO:$IMAGE_TAG .
