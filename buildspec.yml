@@ -13,7 +13,7 @@ phases:
       - yum update -y
     runtime-versions:
       docker: 19
-      python: 3.10
+      python: 3.9
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
