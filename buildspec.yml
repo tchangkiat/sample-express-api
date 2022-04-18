@@ -12,7 +12,7 @@ phases:
     commands:
       - yum update -y
     runtime-versions:
-      docker: 20
+      docker: 19
       python: 3.10
   pre_build:
     commands:
