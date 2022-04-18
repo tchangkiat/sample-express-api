@@ -11,8 +11,12 @@ phases:
   install:
     commands:
       - yum update -y
+      - sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.16.3/hadolint-Linux-x86_64
+      - sudo chmod +x /bin/hadolint
   pre_build:
     commands:
+      - echo Linting Dockerfile
+      - /bin/hadolint Dockerfile
       - echo Logging in to Amazon ECR
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
   build:
