@@ -11,8 +11,6 @@ phases:
   install:
     commands:
       - yum update -y
-    runtime-versions:
-      docker: 19
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
