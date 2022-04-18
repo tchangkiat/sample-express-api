@@ -13,17 +13,14 @@ phases:
       - yum update -y
     runtime-versions:
       docker: 19
-      python: 3.9
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - echo Installing TruffleHog
-      - pip install TruffleHog
   build:
     commands:
       - echo Running TruffleHog Secrets Scan
-      - trufflehog --regex --max_depth 1 $SOURCE_REPO_URL
+      - docker run -it -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --repo $SOURCE_REPO_URL
       - echo Scanning with Hadolint
       - docker run --rm -i hadolint/hadolint < Dockerfile
       - echo Build started on `date`
