@@ -20,7 +20,7 @@ phases:
       - echo Scanning with Hadolint
       - docker run --rm -i hadolint/hadolint < Dockerfile
       - echo Detecting secrets in the repository with TruffleHog
-      - docker run -it -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --repo $SOURCE_REPO_URL
+      - docker run -i -v "$PWD:/pwd" trufflesecurity/trufflehog:latest github --repo $SOURCE_REPO_URL
       - echo Build started on `date`
       - echo Building the Docker image
       - docker build -t $IMAGE_REPO:$IMAGE_TAG .
