@@ -4,6 +4,7 @@
 # - $AWS_ACCOUNT_ID: 12-digit account ID
 # - $IMAGE_REPO: ECR registry name
 # - $IMAGE_TAG: Usually a version number or "latest"
+# - $SOURCE_REPO_URL: Provide the full URL of your GitHub repository. Used by TruffleHog to scan your repository for secrets
 
 version: 0.2
 
