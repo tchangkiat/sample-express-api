@@ -1,0 +1,61 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample-express-api-service
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  ingressClassName: sample-express-api
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sample-express-api-service
+                port:
+                  number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-express-api-service
+spec:
+  selector:
+    app: sample-express-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-express-api
+  labels:
+    app: sample-express-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-express-api
+  template:
+    metadata:
+      labels:
+        app: sample-express-api
+    spec:
+      containers:
+        - name: sample-express-api
+          image: [URL]
+          resources:
+            limits:
+              cpu: "0.4"
+              memory: "200Mi"
+            requests:
+              cpu: "0.2"
+              memory: "100Mi"
+          ports:
+            - containerPort: 8000
