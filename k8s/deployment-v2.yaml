@@ -7,7 +7,6 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ipv4
 spec:
-  ingressClassName: sample-express-api
   rules:
     - http:
         paths:
