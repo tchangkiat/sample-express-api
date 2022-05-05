@@ -14,11 +14,11 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: sample-express-api
+      app.kubernetes.io/name: sample-express-api
   template:
     metadata:
       labels:
-        app: sample-express-api
+        app.kubernetes.io/name: sample-express-api
     spec:
       containers:
         - name: sample-express-api
@@ -40,7 +40,7 @@ metadata:
   name: sample-express-api-service
 spec:
   selector:
-    app: sample-express-api
+    app.kubernetes.io/name: sample-express-api
   ports:
     - protocol: TCP
       port: 80
@@ -51,7 +51,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: sampleexpressapi
-  name: sample-express-api-service
+  name: sample-express-api-ingress
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
