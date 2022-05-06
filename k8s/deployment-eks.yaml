@@ -50,16 +50,14 @@ kind: Ingress
 metadata:
   namespace: sampleexpressapi
   name: sample-express-api-ingress
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+  labels:
+    app: sample-express-api-ingress
 spec:
   ingressClassName: alb
   rules:
     - http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: /*
             backend:
               service:
                 name: sample-express-api-service
