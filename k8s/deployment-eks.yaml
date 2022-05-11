@@ -18,6 +18,13 @@ spec:
       labels:
         app.kubernetes.io/name: sample-express-api
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app: sample-express-api
       containers:
         - name: sample-express-api
           image: [URL]
