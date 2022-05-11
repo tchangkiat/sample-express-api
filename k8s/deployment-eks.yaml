@@ -24,7 +24,7 @@ spec:
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:
-              app: sample-express-api
+              app.kubernetes.io/name: sample-express-api
       containers:
         - name: sample-express-api
           image: [URL]
@@ -57,8 +57,6 @@ kind: Ingress
 metadata:
   namespace: sample
   name: sample-express-api-ingress
-  labels:
-    app: sample-express-api-ingress
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
