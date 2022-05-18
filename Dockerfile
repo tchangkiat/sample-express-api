@@ -1,4 +1,5 @@
-FROM node:lts-alpine
+#FROM node:lts-alpine
+FROM public.ecr.aws/docker/library/node:lts-alpine
 LABEL name "sample-express-api"
 
 # Change working directory
