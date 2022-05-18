@@ -26,41 +26,45 @@ app.use(hpp());
 const si = require("systeminformation");
 
 // For tracing in AWS X-Ray
-var AWSXRay = require('aws-xray-sdk');
-app.use(AWSXRay.express.openSegment('Sample Express API'));
+var AWSXRay = require("aws-xray-sdk");
+app.use(AWSXRay.express.openSegment("Sample Express API"));
 
 // For winston logging
-const { createLogger, format, transports } = require('winston');
+const { createLogger, format, transports } = require("winston");
 const { combine, timestamp } = format;
 const timezoned = () => {
-    return new Date().toLocaleString('en-SG');
-}
+  return new Date().toLocaleString("en-SG");
+};
 const log = createLogger({
-  format: combine(
-    timestamp({ format: timezoned }),
-    format.prettyPrint()
-  ),
-  transports: [new transports.Console()]
+  format: combine(timestamp({ format: timezoned }), format.prettyPrint()),
+  transports: [new transports.Console()],
 });
 
 const port = process.env.PORT || 8000;
 
 app.get("/", async function (req, res) {
-  let [cpu, mem, graphics, os] = await Promise.all([si.cpu(), si.mem(), si.graphics(), si.osInfo()]);
-  var address,
-    ifaces = require("os").networkInterfaces();
-  for (var dev in ifaces) {
-    ifaces[dev].filter((details) =>
-      details.family === "IPv4" && details.internal === false
-        ? (address = details.address)
-        : undefined
-    );
-  }
-  var graphicsInfo = graphics.controllers.length > 0 ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})` : "";
+  let [cpu, mem, graphics, os] = await Promise.all([
+    si.cpu(),
+    si.mem(),
+    si.graphics(),
+    si.osInfo(),
+  ]);
 
-  var envVar = "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
+  let defaultNetworkInterface = await si.networkInterfaces("default");
+  let ip_address = defaultNetworkInterface.ip4;
+  let network_type = defaultNetworkInterface.type;
+  let network_speed = defaultNetworkInterface.speed;
+
+  let graphicsInfo =
+    graphics.controllers.length > 0
+      ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})`
+      : "";
+
+  var envVar =
+    "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
   for (var attr in process.env) {
-    envVar += "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
+    envVar +=
+      "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
   }
   envVar += "</table>";
 
@@ -80,7 +84,7 @@ app.get("/", async function (req, res) {
           IP Address
         </td>
         <td>
-          ${address}
+          ${ip_address} (${network_type}, ${network_speed} Mbit / s)
         </td>
       </tr>
       <tr>
@@ -126,18 +130,18 @@ app.get("/log", async function (req, res) {
 });
 
 app.get("/error", async function (req, res) {
-  log.error("Trigger Error")
+  log.error("Trigger Error");
   res.status(500).send("Trigger Error");
 });
 
 app.get("/crash", async function (req, res) {
-  log.error("Trigger Crash")
+  log.error("Trigger Crash");
   throw "Crash";
 });
 
 app.use(function (req, res, next) {
-  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  log.warn("Unable to find API - " + fullUrl)
+  var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+  log.warn("Unable to find API - " + fullUrl);
   res.status(404).send("Unable to find API - " + fullUrl);
 });
 
