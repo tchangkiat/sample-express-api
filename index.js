@@ -26,8 +26,10 @@ app.use(hpp());
 const si = require("systeminformation");
 
 // For tracing in AWS X-Ray
-var AWSXRay = require("aws-xray-sdk");
+const AWSXRay = require("aws-xray-sdk");
 app.use(AWSXRay.express.openSegment("Sample Express API"));
+
+const axios = require("axios");
 
 // For winston logging
 const { createLogger, format, transports } = require("winston");
@@ -124,15 +126,34 @@ app.get("/", async function (req, res) {
     ${envVar}`);
 });
 
-app.get("/log", async function (req, res) {
-  res
-    .status(200)
-    .send("Use '/log/[your message]' to log a custom message to stdout.");
+app.get("/req", async function (req, res) {
+  const protocol = req.query.protocol ? req.query.protocol : "http";
+  const host = req.query.host ? req.query.host : "localhost";
+  const port = req.query.port ? req.query.port : "8000";
+  const path = req.query.path ? req.query.path : "/";
+  const url = protocol + "://" + host + ":" + port + path;
+  await axios
+    .get(url)
+    .then((response) => {
+      res
+        .status(200)
+        .send("Sent a request to '" + url + "'\n\n" + response.data);
+    })
+    .catch((error) => {
+      log.error(error.message);
+      res.status(500).send(error.message);
+    });
 });
 
-app.get("/log/:message", async function (req, res) {
-  log.info(req.params.message);
-  res.status(200).send("Logged: " + req.params.message);
+app.get("/log/:message?", async function (req, res) {
+  if (req.params.message) {
+    log.info(req.params.message);
+    res.status(200).send("Logged: " + req.params.message);
+  } else {
+    res
+      .status(200)
+      .send("Use '/log/[your message]' to log a custom message to stdout.");
+  }
 });
 
 app.get("/error", async function (req, res) {
