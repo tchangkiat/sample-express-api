@@ -125,8 +125,14 @@ app.get("/", async function (req, res) {
 });
 
 app.get("/log", async function (req, res) {
-  log.info("Trigger Log");
-  res.status(200).send("Trigger Log");
+  res
+    .status(200)
+    .send("Use '/log/[your message]' to log a custom message to stdout.");
+});
+
+app.get("/log/:message", async function (req, res) {
+  log.info(req.params.message);
+  res.status(200).send("Logged: " + req.params.message);
 });
 
 app.get("/error", async function (req, res) {
