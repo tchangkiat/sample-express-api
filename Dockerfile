@@ -14,6 +14,9 @@ COPY package*.json ./
 # Install npm production packages 
 RUN npm install --production
 
+# Install curl
+RUN apk --no-cache add curl
+
 COPY . .
 
 ENV NODE_ENV production
