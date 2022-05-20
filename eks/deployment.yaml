@@ -55,7 +55,7 @@ spec:
     app.kubernetes.io/name: sample-express-api
   ports:
     - protocol: TCP
-      port: 80
+      port: 8000
       targetPort: 8000
   type: NodePort
 ---
@@ -77,4 +77,4 @@ spec:
               service:
                 name: sample-express-api
                 port:
-                  number: 80
+                  number: 8000
