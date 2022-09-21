@@ -32,6 +32,16 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/name: sample-express-api
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: eks.amazonaws.com/capacityType
+                    operator: In
+                    values:
+                      - SPOT
       containers:
         - name: sample-express-api
           image: [URL]
