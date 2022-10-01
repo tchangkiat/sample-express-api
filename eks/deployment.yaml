@@ -27,7 +27,7 @@ spec:
       serviceAccountName: sample-express-api
       topologySpreadConstraints:
         - maxSkew: 1
-          topologyKey: topology.kubernetes.io/zone
+          topologyKey: topology.kubernetes.io/zone # This topology key forces Karpenter to spread the nodes across availability zones
           whenUnsatisfiable: DoNotSchedule
           labelSelector:
             matchLabels:
