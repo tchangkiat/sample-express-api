@@ -29,7 +29,6 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
-        allowPrivilegeEscalation: false
         runAsUser: 1000
         runAsGroup: 3000
         fsGroup: 2000
@@ -75,6 +74,8 @@ spec:
               memory: "300Mi"
           ports:
             - containerPort: 8000
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
