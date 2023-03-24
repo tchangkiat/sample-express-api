@@ -62,14 +62,6 @@ app.get("/", async function (req, res) {
       ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})`
       : "";
 
-  var envVar =
-    "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
-  for (var attr in process.env) {
-    envVar +=
-      "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
-  }
-  envVar += "</table>";
-
   res.send(`
     <h1>Host Information</h1>
     <table cellpadding='10'>
@@ -121,7 +113,19 @@ app.get("/", async function (req, res) {
           ${os.distro} ${os.release} ${os.codename} ${os.kernel}
         </td>
       </tr>
-    </table>
+    </table>`);
+});
+
+app.get("/env-var", async function (req, res) {
+  var envVar =
+    "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
+  for (var attr in process.env) {
+    envVar +=
+      "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
+  }
+  envVar += "</table>";
+
+  res.send(`
     <h1>Environment Variables</h1>
     ${envVar}`);
 });
