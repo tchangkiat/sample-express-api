@@ -35,8 +35,6 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-        capabilities:
-          drop: ["ALL"]
       serviceAccountName: sample-express-api
       # This topology spread constraints configuration makes Karpenter to spread the nodes across all availability zones and spread the pods across all nodes evenly
       topologySpreadConstraints:
