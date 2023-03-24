@@ -74,6 +74,8 @@ spec:
             - containerPort: 8000
           securityContext:
             allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
 ---
 apiVersion: v1
 kind: Service
