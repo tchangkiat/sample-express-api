@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: sample-express-api
+  namespace: sample
+spec:
+  parentRefs:
+    - name: sample-network
+      sectionName: tls-with-default-domain
+  rules:
+    - backendRefs:
+        - name: sample-express-api
+          kind: Service
+          port: 8000
+          namespace: sample
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
