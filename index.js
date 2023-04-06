@@ -153,7 +153,11 @@ app.get("/req", async function (req, res) {
 
 app.get("/k8s/:resourcetype?", async function (req, res) {
   const kc = new k8s.KubeConfig();
-  kc.loadFromDefault();
+  if (req.query.test == "true") {
+    kc.loadFromDefault();
+  } else {
+    kc.loadFromCluster();
+  }
 
   const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const namespace = req.query.namespace ? req.query.namespace : "default";
