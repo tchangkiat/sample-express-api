@@ -153,7 +153,7 @@ app.get("/req", async function (req, res) {
 
 app.get("/k8s/:resourcetype?", async function (req, res) {
   const kc = new k8s.KubeConfig();
-  if (req.query.test == "true") {
+  if (req.query.local == "") {
     kc.loadFromDefault();
   } else {
     kc.loadFromCluster();
