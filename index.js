@@ -167,9 +167,14 @@ app.get("/k8s/:resourcetype?", async function (req, res) {
       : req.params.resourcetype == "nodes"
       ? k8sApi.listNode()
       : k8sApi.listNamespace();
-  func.then((r) => {
-    res.status(200).send(r.body);
-  });
+  func
+    .then((r) => {
+      res.status(200).send(r.body);
+    })
+    .catch((err) => {
+      log.error(err);
+      res.status(500).send(err);
+    });
 });
 
 app.get("/log/:message?", async function (req, res) {
