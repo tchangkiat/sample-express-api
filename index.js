@@ -3,6 +3,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const k8s = require("@kubernetes/client-node");
+
 const compression = require("compression"); // Compress response body
 app.use(compression());
 
@@ -147,6 +149,23 @@ app.get("/req", async function (req, res) {
       log.error(error.message);
       res.status(500).send(error.message);
     });
+});
+
+app.get("/k8s/:resourcetype?", async function (req, res) {
+  const kc = new k8s.KubeConfig();
+  kc.loadFromDefault();
+
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+  const namespace = req.query.namespace ? req.query.namespace : "default";
+  const func =
+    req.params.resourcetype == "pods"
+      ? k8sApi.listNamespacedPod(namespace)
+      : req.params.resourcetype == "nodes"
+      ? k8sApi.listNode()
+      : k8sApi.listNamespace();
+  func.then((r) => {
+    res.status(200).send(r.body);
+  });
 });
 
 app.get("/log/:message?", async function (req, res) {
