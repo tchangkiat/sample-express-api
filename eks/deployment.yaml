@@ -27,7 +27,6 @@ spec:
       labels:
         app.kubernetes.io/name: sample-express-api
     spec:
-      automountServiceAccountToken: false
       securityContext:
         runAsUser: 1000
         runAsGroup: 3000
@@ -63,6 +62,7 @@ spec:
       containers:
         - name: sample-express-api
           image: [URL]
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: "0.3"

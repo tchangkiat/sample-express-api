@@ -151,6 +151,32 @@ app.get("/req", async function (req, res) {
     });
 });
 
+app.get("/k8s/pod-images", async function (req, res) {
+  const kc = new k8s.KubeConfig();
+  if (req.query.local == "") {
+    kc.loadFromDefault();
+  } else {
+    kc.loadFromCluster();
+  }
+
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+  const namespace = req.query.namespace ? req.query.namespace : "kube-system";
+  k8sApi
+    .listNamespacedPod(namespace)
+    .then((r) => {
+      pod_images = [];
+      for (p of r.body.items) {
+        pod_images.push(p.spec.containers[0].image);
+      }
+      pod_images = [...new Set(pod_images)]; // Remove duplicates
+      res.status(200).send(pod_images);
+    })
+    .catch((error) => {
+      log.error(error.message);
+      res.status(500).send(error);
+    });
+});
+
 app.get("/k8s/:resourcetype?", async function (req, res) {
   const kc = new k8s.KubeConfig();
   if (req.query.local == "") {
