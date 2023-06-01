@@ -3,6 +3,9 @@ kind: Namespace
 metadata:
   name: sample
   labels:
+    mesh: sample-mesh
+    gateway: sample-express-api-gateway
+    appmesh.k8s.aws/sidecarInjectorWebhook: enabled
     pod-security.kubernetes.io/warn: restricted
     pod-security.kubernetes.io/warn-version: v1.25
 ---
@@ -72,10 +75,6 @@ spec:
               memory: "300Mi"
           ports:
             - containerPort: 8000
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
 ---
 apiVersion: v1
 kind: Service
