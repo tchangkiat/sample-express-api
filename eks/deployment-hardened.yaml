@@ -27,6 +27,13 @@ spec:
       labels:
         app.kubernetes.io/name: sample-express-api
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: sample-express-api
       # This topology spread constraints configuration makes Karpenter to spread the nodes across all availability zones and spread the pods across all nodes evenly
       topologySpreadConstraints:
@@ -65,6 +72,10 @@ spec:
               memory: "300Mi"
           ports:
             - containerPort: 8000
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
 ---
 apiVersion: v1
 kind: Service
