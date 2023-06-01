@@ -3,9 +3,6 @@ kind: Namespace
 metadata:
   name: sample
   labels:
-    mesh: sample-mesh
-    gateway: sample-express-api-gateway
-    appmesh.k8s.aws/sidecarInjectorWebhook: enabled
     pod-security.kubernetes.io/warn: restricted
     pod-security.kubernetes.io/warn-version: latest
 ---
