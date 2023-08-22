@@ -87,7 +87,7 @@ metadata:
   name: sample-express-api
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: nginx
 spec:
   tls:
     - hosts:
