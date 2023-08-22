@@ -18,7 +18,7 @@ metadata:
   namespace: sample
   name: sample-express-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: sample-express-api

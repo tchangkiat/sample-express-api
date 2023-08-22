@@ -18,7 +18,7 @@ metadata:
   namespace: sample
   name: sample-express-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: sample-express-api
@@ -87,14 +87,15 @@ metadata:
   name: sample-express-api
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: "nginx"
 spec:
-  ingressClassName: nginx
   tls:
     - hosts:
         - test.changkiat.com
-      secretName: letsencrypt-staging
+      secretName: sample-express-api-tls
   rules:
-    - http:
+    - host: test.changkiat.com
+      http:
         paths:
           - path: /
             pathType: Prefix
