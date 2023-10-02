@@ -8,9 +8,6 @@ WORKDIR "/app"
 # Update packages
 RUN apk update
 
-# Install nano
-RUN apk add nano
-
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
@@ -27,6 +24,6 @@ ENV PORT 8000
 
 EXPOSE 8000
 
-#USER node
+USER node
 
 CMD [ "node",  "index.js" ]
