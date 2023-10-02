@@ -27,6 +27,6 @@ ENV PORT 8000
 
 EXPOSE 8000
 
-USER node
+#USER node
 
 CMD [ "node",  "index.js" ]
