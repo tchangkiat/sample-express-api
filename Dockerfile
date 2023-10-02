@@ -8,6 +8,9 @@ WORKDIR "/app"
 # Update packages
 RUN apk update
 
+# Install nano
+RUN apk add nano
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
