@@ -205,7 +205,11 @@ app.get("/k8s/:resourcetype?", async function (req, res) {
 });
 
 app.get("/postgresql-test", async function (req, res) {
-  const sequelize = new Sequelize('postgres://' + process.env["db_username"] + ':' + process.env["db_password"] + '@' + process.env["db_host"] + ':' + process.env["db_port"] + '/' + process.env["db_username"] + '')
+  const sequelize = new Sequelize(process.env["db_username"], process.env["db_username"], process.env["db_password"], {
+    host: process.env["db_host"],
+    dialect: 'postgres',
+    port: process.env["db_port"]
+  });
 
   try {
     await sequelize.authenticate();
