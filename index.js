@@ -4,6 +4,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const k8s = require("@kubernetes/client-node");
+const { Sequelize } = require('sequelize');
 
 const compression = require("compression"); // Compress response body
 app.use(compression());
@@ -201,6 +202,17 @@ app.get("/k8s/:resourcetype?", async function (req, res) {
       log.error(err);
       res.status(500).send(err);
     });
+});
+
+app.get("/postgresql-test", async function (req, res) {
+  const sequelize = new Sequelize('postgres://' + process.env["db_username"] + ':' + process.env["db_password"] + '@' + process.env["db_host"] + ':' + process.env["db_port"] + '/' + process.env["db_username"] + '')
+
+  try {
+    await sequelize.authenticate();
+    res.status(200).send('Connection has been established successfully.');
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 app.get("/log/:message?", async function (req, res) {
