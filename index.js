@@ -206,17 +206,26 @@ app.get("/k8s/:resourcetype?", async function (req, res) {
 });
 
 app.get("/postgresql-test", async function (req, res) {
+  var ssl = true
+  var dialectOptions = {
+    ssl: {
+        rejectUnauthorized: false,
+        ca: fs.readFileSync("rds-global-certificate-bundle.pem").toString(),
+    }
+  }
+  if (req.query.nossl == "") {
+    ssl = false
+    dialectOptions = {}
+  } else if (req.query.sslnoca == "") {
+    dialectOptions = {}
+  }
+
   const sequelize = new Sequelize(process.env["db_username"], process.env["db_username"], process.env["db_password"], {
     host: process.env["db_host"],
     dialect: 'postgres',
     port: process.env["db_port"],
-    ssl: true,
-    dialectOptions: {
-      ssl: {
-          rejectUnauthorized: false,
-          ca: fs.readFileSync("rds-global-certificate-bundle.pem").toString(),
-      }
-    }
+    ssl,
+    dialectOptions
   });
 
   try {
