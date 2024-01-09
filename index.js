@@ -5,6 +5,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const k8s = require("@kubernetes/client-node");
 const { Sequelize } = require('sequelize');
+const fs = require('fs');
 
 const compression = require("compression"); // Compress response body
 app.use(compression());
