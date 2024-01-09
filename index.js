@@ -208,7 +208,13 @@ app.get("/postgresql-test", async function (req, res) {
   const sequelize = new Sequelize(process.env["db_username"], process.env["db_username"], process.env["db_password"], {
     host: process.env["db_host"],
     dialect: 'postgres',
-    port: process.env["db_port"]
+    port: process.env["db_port"],
+    dialectOptions: {
+      ssl: {
+          require: true,
+          rejectUnauthorized: false
+      }
+    }
   });
 
   try {
