@@ -209,10 +209,11 @@ app.get("/postgresql-test", async function (req, res) {
     host: process.env["db_host"],
     dialect: 'postgres',
     port: process.env["db_port"],
+    ssl: true,
     dialectOptions: {
       ssl: {
-          require: true,
-          rejectUnauthorized: false
+          rejectUnauthorized: false,
+          ca: fs.readFileSync("rds-global-certificate-bundle.pem").toString(),
       }
     }
   });
