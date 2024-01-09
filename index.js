@@ -211,7 +211,7 @@ app.get("/postgresql-test", async function (req, res) {
     await sequelize.authenticate();
     res.status(200).send('Connection has been established successfully.');
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send(error + "<br/><br/>" + process.env["db_host"] + ":" + process.env["db_port"]);
   }
 });
 
