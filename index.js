@@ -66,58 +66,22 @@ app.get("/", async function (req, res) {
       ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})`
       : "";
 
-  res.send(`
-    <h1>Host Information</h1>
-    <table cellpadding='10'>
-      <tr>
-        <td>
-          Host Name
-        </td>
-        <td>
-          ${os.hostname}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          IP Address
-        </td>
-        <td>
-          ${ip_address} (${network_type}, ${network_speed} Mbit / s)
-        </td>
-      </tr>
-      <tr>
-        <td>
-          CPU
-        </td>
-        <td>
-          ${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Memory
-        </td>
-        <td>
-          ${mem.total / 1000000000} GB
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Graphics
-        </td>
-        <td>
-          ${graphicsInfo}
-        </td>
-      </tr>
-      <tr>
-        <td>
-          OS
-        </td>
-        <td>
-          ${os.distro} ${os.release} ${os.codename} ${os.kernel}
-        </td>
-      </tr>
-    </table>`);
+  var content = '<!DOCTYPE html><html><head><title>System Information</title></head><body><h1>System Information</h1>'
+  let items = [
+    {'key': 'Host Name', 'value': os.hostname},
+    {'key': 'IP Address', 'value': `${ip_address} (${network_type}, ${network_speed} Mbit / s)`},
+    {'key': 'CPU', 'value': `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)`},
+    {'key': 'Memory', 'value': `${mem.total / 1000000000} GB`},
+    {'key': 'Graphic', 'value': graphicsInfo},
+    {'key': 'OS', 'value': `${os.distro} ${os.release} ${os.codename} ${os.kernel}`}
+  ]
+  content += "<table cellpadding='10'>"
+  for (var item of items) {
+    content += "<tr><td>" + item["key"] + "</td><td>" + item["value"] + "</td></tr>"
+  }
+  content += "</table></body></html>"
+
+  res.status(200).send(content);
 });
 
 app.get("/env-var", async function (req, res) {
