@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/tchangkiat/sample-express-api#readme",
   "dependencies": {
-    "@kubernetes/client-node": "^0.20.0",
     "aws-xray-sdk": "^3.5.3",
     "axios": "^1.6.5",
     "compression": "^1.7.4",

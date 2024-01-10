@@ -3,6 +3,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const k8s = require("@kubernetes/client-node");
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
 
@@ -116,28 +117,59 @@ app.get("/req", async function (req, res) {
     });
 });
 
-app.get("/log/:message?", async function (req, res) {
-  if (req.params.message) {
-    log.info(req.params.message);
-    res.status(200).send("Logged: " + req.params.message);
+app.get("/k8s/pod-images", async function (req, res) {
+  const kc = new k8s.KubeConfig();
+  if (req.query.local == "") {
+    kc.loadFromDefault();
   } else {
-    res
-      .status(200)
-      .send("Use '/log/[your message]' to log a custom message to stdout.");
+    kc.loadFromCluster();
   }
+
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+  const namespace = req.query.namespace ? req.query.namespace : "kube-system";
+  k8sApi
+    .listNamespacedPod(namespace)
+    .then((r) => {
+      pod_images = [];
+      for (p of r.body.items) {
+        pod_images.push(p.spec.containers[0].image);
+      }
+      pod_images = [...new Set(pod_images)]; // Remove duplicates
+      res.status(200).send(pod_images);
+    })
+    .catch((error) => {
+      log.error(error.message);
+      res.status(500).send(error);
+    });
 });
 
-app.get("/error", async function (req, res) {
-  log.error("Trigger Error");
-  res.status(500).send("Trigger Error");
+app.get("/k8s/:resourcetype?", async function (req, res) {
+  const kc = new k8s.KubeConfig();
+  if (req.query.local == "") {
+    kc.loadFromDefault();
+  } else {
+    kc.loadFromCluster();
+  }
+
+  const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+  const namespace = req.query.namespace ? req.query.namespace : "default";
+  const func =
+    req.params.resourcetype == "pods"
+      ? k8sApi.listNamespacedPod(namespace)
+      : req.params.resourcetype == "nodes"
+      ? k8sApi.listNode()
+      : k8sApi.listNamespace();
+  func
+    .then((r) => {
+      res.status(200).send(r.body);
+    })
+    .catch((err) => {
+      log.error(err);
+      res.status(500).send(err);
+    });
 });
 
-app.get("/crash", async function (req, res) {
-  log.error("Trigger Crash");
-  throw "Crash";
-});
-
-app.get("/psql", async function (req, res) {
+app.get("/postgresql-test", async function (req, res) {
   var ssl = true
   var dialectOptions = {
     ssl: {
@@ -170,6 +202,27 @@ app.get("/psql", async function (req, res) {
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+app.get("/log/:message?", async function (req, res) {
+  if (req.params.message) {
+    log.info(req.params.message);
+    res.status(200).send("Logged: " + req.params.message);
+  } else {
+    res
+      .status(200)
+      .send("Use '/log/[your message]' to log a custom message to stdout.");
+  }
+});
+
+app.get("/error", async function (req, res) {
+  log.error("Trigger Error");
+  res.status(500).send("Trigger Error");
+});
+
+app.get("/crash", async function (req, res) {
+  log.error("Trigger Crash");
+  throw "Crash";
 });
 
 app.use(function (req, res, next) {
