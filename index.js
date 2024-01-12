@@ -142,18 +142,11 @@ app.get("/psql", async function (req, res) {
   var dialectOptions = {
     ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync("rds-global-certificate-bundle.pem").toString()
     }
   }
   if (req.query.nossl == "") {
     ssl = false
     dialectOptions = {}
-  } else if (req.query.sslnoca == "") {
-    dialectOptions = {
-      ssl: {
-          rejectUnauthorized: false
-      }
-    }
   }
 
   const sequelize = new Sequelize(process.env["db_username"], process.env["db_username"], process.env["db_password"], {
