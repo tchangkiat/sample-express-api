@@ -61,7 +61,7 @@ spec:
                       - SPOT
       containers:
         - name: sample-express-api
-          image: 409989946510.dkr.ecr.ap-southeast-1.amazonaws.com/mapl:latest
+          image: [URL]
           imagePullPolicy: Always
           resources:
             limits:
