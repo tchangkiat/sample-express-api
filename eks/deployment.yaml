@@ -27,6 +27,7 @@ spec:
       labels:
         app.kubernetes.io/name: sample-express-api
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
