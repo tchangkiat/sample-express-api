@@ -26,4 +26,7 @@ EXPOSE 8000
 
 USER node
 
+# Remove special permissions from all binaries with the SETUID and SETGID bits as they can be used to escalate privilege
+RUN find / -xdev -perm /6000 -type f -exec chmod a-s {} \; || true
+
 CMD [ "node",  "index.js" ]
