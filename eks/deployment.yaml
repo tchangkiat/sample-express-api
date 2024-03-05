@@ -29,10 +29,11 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
-        runAsNonRoot: true
+        # Commented next 4 lines away to make AWS App Mesh work
+        # runAsUser: 65534
+        # runAsGroup: 65534
+        # fsGroup: 65534
+        # runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
       serviceAccountName: sample-express-api
