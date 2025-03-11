@@ -15,12 +15,12 @@ app.use(helmet());
 const cors = require("cors");
 app.use(cors());
 
-const rateLimit = require("express-rate-limit"); // Limit repeated requests to APIs
-const limiter = rateLimit({
-  windowMs: 1000, // 1 second
-  max: 2, // limit each IP to 2 requests per windowMs
-});
-app.use(limiter);
+// const rateLimit = require("express-rate-limit"); // Limit repeated requests to APIs
+// const limiter = rateLimit({
+//   windowMs: 1000, // 1 second
+//   max: 2, // limit each IP to 2 requests per windowMs
+// });
+// app.use(limiter);
 app.set("trust proxy", 1); // Enable if you're behind a reverse proxy
 
 const hpp = require("hpp"); // Prevent HTTP Parameter Pollution
@@ -46,6 +46,7 @@ const log = createLogger({
 });
 
 const port = process.env.PORT || 8000;
+var req_count = 0
 
 app.get("/", async function (req, res) {
   let [cpu, mem, graphics, os] = await Promise.all([
@@ -80,6 +81,7 @@ app.get("/", async function (req, res) {
   }
   content += "</table></body></html>"
 
+  req_count += 1
   res.status(200).send(content);
 });
 
@@ -90,6 +92,8 @@ app.get("/env-var", async function (req, res) {
     envVar +=
       "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
   }
+  envVar +=
+      "<tr><td>REQUEST_COUNT</td><td>" + req_count + "</td></tr>";
   envVar += "</table>";
 
   res.send(`
