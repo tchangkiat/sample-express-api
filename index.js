@@ -70,7 +70,7 @@ app.get("/", async function (req, res) {
   let items = [
     {'key': 'Host Name', 'value': os.hostname},
     {'key': 'IP Address', 'value': `${ip_address} (${network_type}, ${network_speed} Mbit / s)`},
-    {'key': 'CPU', 'value': `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${cpu.cores} cores)`},
+    {'key': 'CPU', 'value': `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${process.arch} | ${cpu.cores} logical cores | ${cpu.physicalCores} physical cores)`},
     {'key': 'Memory', 'value': `${mem.total / 1000000000} GB`},
     {'key': 'Graphic', 'value': graphicsInfo},
     {'key': 'OS', 'value': `${os.distro} ${os.release} ${os.codename} ${os.kernel}`}
