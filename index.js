@@ -82,18 +82,19 @@ app.get("/", async function (req, res) {
   content += "</table></body></html>"
 
   req_count += 1
+  process.env["REQUEST_COUNT"] = req_count
   res.status(200).send(content);
 });
 
 app.get("/env-var", async function (req, res) {
   var envVar =
     "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
-  for (var attr in process.env) {
+  
+  const sortedKeys = Object.keys(process.env).sort();
+  for (const key of sortedKeys) {
     envVar +=
-      "<tr><td>" + attr + "</td><td>" + process.env[attr] + "</td></tr>";
+      "<tr><td>" + key + "</td><td>" + process.env[key] + "</td></tr>";
   }
-  envVar +=
-      "<tr><td>REQUEST_COUNT</td><td>" + req_count + "</td></tr>";
   envVar += "</table>";
 
   res.send(`
