@@ -14,9 +14,6 @@ COPY package*.json ./
 # Install npm production packages \
 RUN npm install --production
 
-# Install curl
-RUN apk --no-cache add curl
-
 # Install pm2
 RUN npm install pm2 -g
 
@@ -29,9 +26,5 @@ EXPOSE 8000
 
 USER node
 
-# Remove special permissions from all binaries with the SETUID and SETGID bits as they can be used to escalate privilege
-RUN find / -xdev -perm /6000 -type f -exec chmod a-s {} \; || true
-
-# CMD [ "node",  "index.js" ]
-# CMD ["pm2-runtime", "index.js"]
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+# CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD ["pm2", "start", "index.js", "--no-daemon", "--kill-timeout", "60000", "-i", "10", "--max-memory-restart", "4096M", "--node-args='--max-old-space-size=4096'"]
