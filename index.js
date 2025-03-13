@@ -180,6 +180,10 @@ io.on('connection', (socket) => {
     active_users -= 1
     process.env["SOCKET_IO_ACTIVE_USERS"] = active_users
   });
+  socket.on('chat message', (msg) => {
+    console.log('message: ' + msg);
+    io.emit('chat message', 'Got your message!');
+  });
 });
 app.get('/socketio', (req, res) => {
   res.sendFile(__dirname + '/socketio.html');
