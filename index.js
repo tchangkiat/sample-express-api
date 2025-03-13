@@ -187,6 +187,19 @@ app.get('/socketio', (req, res) => {
 app.get('/socketio-js', (req, res) => {
   res.sendFile(__dirname + '/socket.io.min.js');
 });
+app.get("/load-test-stats", async function (req, res) {
+  var envVar =
+    "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
+  envVar +="<tr><td>pm_id</td><td>" + process.env["pm_id"] + "</td></tr>";
+  envVar +="<tr><td>REQUEST_COUNT</td><td>" + process.env["REQUEST_COUNT"] + "</td></tr>";
+  envVar +="<tr><td>SOCKET_IO_ACTIVE_USERS</td><td>" + process.env["SOCKET_IO_ACTIVE_USERS"] + "</td></tr>";
+  envVar +="<tr><td>SOCKET_IO_TOTAL_USERS</td><td>" + process.env["SOCKET_IO_TOTAL_USERS"] + "</td></tr>";
+  envVar += "</table>";
+
+  res.send(`
+    <h1>Load Test Statistics</h1>
+    ${envVar}`);
+});
 
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;

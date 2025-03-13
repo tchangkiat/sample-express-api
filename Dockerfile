@@ -27,4 +27,4 @@ EXPOSE 8000
 USER node
 
 # CMD ["pm2-runtime", "start", "ecosystem.config.js"]
-CMD ["pm2", "start", "index.js", "--no-daemon", "--kill-timeout", "60000", "-i", "10", "--max-memory-restart", "4096M", "--node-args='--max-old-space-size=4096'"]
+CMD ["pm2", "start", "index.js", "--no-daemon", "--kill-timeout", "60000", "-i", "4", "--max-memory-restart", "4096M", "--node-args='--max-old-space-size=4096'"]
