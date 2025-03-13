@@ -165,17 +165,20 @@ app.get("/psql", async function (req, res) {
 });
 
 // For socket.io
-var active_user = 0
+var active_users = 0
+var total_users_connected = 0
 const { Server } = require("socket.io");
 const io = new Server(server);
 io.on('connection', (socket) => {
-  log.info('User connected');
-  active_user += 1
-  process.env["SOCKET_IO_ACTIVE_USER"] = active_user
+  //log.info('User connected');
+  active_users += 1
+  process.env["SOCKET_IO_ACTIVE_USERS"] = active_users
+  total_users_connected += 1
+  process.env["SOCKET_IO_TOTAL_USERS"] = total_users_connected
   socket.on('disconnect', () => {
-    log.info('User disconnected');
-    active_user -= 1
-    process.env["SOCKET_IO_ACTIVE_USER"] = active_user
+    //log.info('User disconnected');
+    active_users -= 1
+    process.env["SOCKET_IO_ACTIVE_USERS"] = active_users
   });
 });
 app.get('/socketio', (req, res) => {
