@@ -2,10 +2,10 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const http = require('http');
+const http = require("http");
 const server = http.createServer(app);
 
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
 const compression = require("compression"); // Compress response body
 app.use(compression());
@@ -40,7 +40,7 @@ const log = createLogger({
 });
 
 const port = process.env.PORT || 8000;
-var req_count = 0
+var req_count = 0;
 
 app.get("/", async function (req, res) {
   let [cpu, mem, graphics, os] = await Promise.all([
@@ -60,34 +60,44 @@ app.get("/", async function (req, res) {
       ? `${graphics.controllers[0].model} (VRAM: ${graphics.controllers[0].vram})`
       : "";
 
-  var content = '<!DOCTYPE html><html><head><title>System Information</title></head><body><h1>System Information</h1>'
+  var content =
+    "<!DOCTYPE html><html><head><title>System Information</title></head><body><h1>System Information</h1>";
   let items = [
-    {'key': 'Host Name', 'value': os.hostname},
-    {'key': 'IP Address', 'value': `${ip_address} (${network_type}, ${network_speed} Mbit / s)`},
-    {'key': 'CPU', 'value': `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${process.arch} | ${cpu.cores} logical cores | ${cpu.physicalCores} physical cores)`},
-    {'key': 'Memory', 'value': `${mem.total / 1000000000} GB`},
-    {'key': 'Graphic', 'value': graphicsInfo},
-    {'key': 'OS', 'value': `${os.distro} ${os.release} ${os.codename} ${os.kernel}`}
-  ]
-  content += "<table cellpadding='10'>"
+    { key: "Host Name", value: os.hostname },
+    {
+      key: "IP Address",
+      value: `${ip_address} (${network_type}, ${network_speed} Mbit / s)`,
+    },
+    {
+      key: "CPU",
+      value: `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${process.arch} | ${cpu.cores} logical cores | ${cpu.physicalCores} physical cores)`,
+    },
+    { key: "Memory", value: `${mem.total / 1000000000} GB` },
+    { key: "Graphic", value: graphicsInfo },
+    {
+      key: "OS",
+      value: `${os.distro} ${os.release} ${os.codename} ${os.kernel}`,
+    },
+  ];
+  content += "<table cellpadding='10'>";
   for (var item of items) {
-    content += "<tr><td>" + item["key"] + "</td><td>" + item["value"] + "</td></tr>"
+    content +=
+      "<tr><td>" + item["key"] + "</td><td>" + item["value"] + "</td></tr>";
   }
-  content += "</table></body></html>"
+  content += "</table></body></html>";
 
-  req_count += 1
-  process.env["REQUEST_COUNT"] = req_count
+  req_count += 1;
+  process.env["REQUEST_COUNT"] = req_count;
   res.status(200).send(content);
 });
 
 app.get("/env-var", async function (req, res) {
   var envVar =
     "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
-  
+
   const sortedKeys = Object.keys(process.env).sort();
   for (const key of sortedKeys) {
-    envVar +=
-      "<tr><td>" + key + "</td><td>" + process.env[key] + "</td></tr>";
+    envVar += "<tr><td>" + key + "</td><td>" + process.env[key] + "</td></tr>";
   }
   envVar += "</table>";
 
@@ -137,67 +147,86 @@ app.get("/crash", async function (req, res) {
 });
 
 app.get("/psql", async function (req, res) {
-  var ssl = true
+  var ssl = true;
   var dialectOptions = {
     ssl: {
-        rejectUnauthorized: false,
-    }
-  }
+      rejectUnauthorized: false,
+    },
+  };
   if (req.query.nossl == "") {
-    ssl = false
-    dialectOptions = {}
+    ssl = false;
+    dialectOptions = {};
   }
 
-  const sequelize = new Sequelize(process.env["db_username"], process.env["db_username"], process.env["db_password"], {
-    host: process.env["db_host"],
-    dialect: 'postgres',
-    port: process.env["db_port"],
-    ssl,
-    dialectOptions
-  });
+  const sequelize = new Sequelize(
+    process.env["db_username"],
+    process.env["db_username"],
+    process.env["db_password"],
+    {
+      host: process.env["db_host"],
+      dialect: "postgres",
+      port: process.env["db_port"],
+      ssl,
+      dialectOptions,
+    }
+  );
 
   try {
     await sequelize.authenticate();
-    res.status(200).send('Connection has been established successfully.');
+    res.status(200).send("Connection has been established successfully.");
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
 // For socket.io
-var active_users = 0
-var total_users_connected = 0
+var active_users = 0;
+var total_users_connected = 0;
 const { Server } = require("socket.io");
 const io = new Server(server);
-io.on('connection', (socket) => {
+const io_client = require("socket.io-client");
+io.on("connection", (socket) => {
   //log.info('User connected');
-  active_users += 1
-  process.env["SOCKET_IO_ACTIVE_USERS"] = active_users
-  total_users_connected += 1
-  process.env["SOCKET_IO_TOTAL_USERS"] = total_users_connected
-  socket.on('disconnect', () => {
+  active_users += 1;
+  process.env["SOCKET_IO_ACTIVE_USERS"] = active_users;
+  total_users_connected += 1;
+  process.env["SOCKET_IO_TOTAL_USERS"] = total_users_connected;
+  socket.on("disconnect", () => {
     //log.info('User disconnected');
-    active_users -= 1
-    process.env["SOCKET_IO_ACTIVE_USERS"] = active_users
+    active_users -= 1;
+    process.env["SOCKET_IO_ACTIVE_USERS"] = active_users;
   });
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
-    io.emit('chat message', 'Got your message!');
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+    io.emit("chat message", "Got your message!");
   });
 });
-app.get('/socketio', (req, res) => {
-  res.sendFile(__dirname + '/socketio.html');
+app.get("/socketio", (req, res) => {
+  //res.sendFile(__dirname + '/socketio.html');
+  var socket = io_client.connect("http://localhost:" + port, {
+    transports: ["websocket"],
+    upgrade: false,
+  });
+  res.status(200).send("Ok");
 });
-app.get('/socketio-js', (req, res) => {
-  res.sendFile(__dirname + '/socket.io.min.js');
+app.get("/socketio-ui", (req, res) => {
+  res.sendFile(__dirname + "/socketio.html");
+});
+app.get("/socketio-js", (req, res) => {
+  res.sendFile(__dirname + "/socket.io.min.js");
 });
 app.get("/load-test-stats", async function (req, res) {
   var envVar =
     "<table cellpadding='10'><tr><th align='left'>Key</th><th align='left'>Value</th></tr>";
-  envVar +="<tr><td>pm_id</td><td>" + process.env["pm_id"] + "</td></tr>";
-  envVar +="<tr><td>REQUEST_COUNT</td><td>" + process.env["REQUEST_COUNT"] + "</td></tr>";
-  envVar +="<tr><td>SOCKET_IO_ACTIVE_USERS</td><td>" + process.env["SOCKET_IO_ACTIVE_USERS"] + "</td></tr>";
-  envVar +="<tr><td>SOCKET_IO_TOTAL_USERS</td><td>" + process.env["SOCKET_IO_TOTAL_USERS"] + "</td></tr>";
+  envVar += "<tr><td>pm_id</td><td>" + process.env["pm_id"] + "</td></tr>";
+  envVar +=
+    "<tr><td>REQUEST_COUNT</td><td>" +
+    process.env["REQUEST_COUNT"] +
+    "</td></tr>";
+  envVar +=
+    "<tr><td>SOCKET_IO_TOTAL_USERS</td><td>" +
+    process.env["SOCKET_IO_TOTAL_USERS"] +
+    "</td></tr>";
   envVar += "</table>";
 
   res.send(`
