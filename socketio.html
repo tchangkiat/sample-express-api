@@ -22,7 +22,7 @@
     </form>
     <script src="/socketio-js"></script>
     <script>
-      var socket = io();
+      var socket = io({transports: ["websocket"]}); // {transports: ["websocket"]} is needed for pm2. Refer to https://socket.io/docs/v4/pm2/
 
       var form = document.getElementById('form');
       var input = document.getElementById('input');
