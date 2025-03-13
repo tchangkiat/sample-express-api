@@ -2,15 +2,13 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const http = require('http');
+const server = http.createServer(app);
 
 const { Sequelize } = require('sequelize');
-const fs = require('fs');
 
 const compression = require("compression"); // Compress response body
 app.use(compression());
-
-const helmet = require("helmet"); // Helps to secure this app by setting various HTTP headers
-app.use(helmet());
 
 const cors = require("cors");
 app.use(cors());
@@ -21,10 +19,6 @@ app.use(cors());
 //   max: 2, // limit each IP to 2 requests per windowMs
 // });
 // app.use(limiter);
-app.set("trust proxy", 1); // Enable if you're behind a reverse proxy
-
-const hpp = require("hpp"); // Prevent HTTP Parameter Pollution
-app.use(hpp());
 
 const si = require("systeminformation");
 
@@ -170,6 +164,27 @@ app.get("/psql", async function (req, res) {
   }
 });
 
+// For socket.io
+var active_user = 0
+const { Server } = require("socket.io");
+const io = new Server(server);
+io.on('connection', (socket) => {
+  log.info('User connected');
+  active_user += 1
+  process.env["SOCKET_IO_ACTIVE_USER"] = active_user
+  socket.on('disconnect', () => {
+    log.info('User disconnected');
+    active_user -= 1
+    process.env["SOCKET_IO_ACTIVE_USER"] = active_user
+  });
+});
+app.get('/socketio', (req, res) => {
+  res.sendFile(__dirname + '/socketio.html');
+});
+app.get('/socketio-js', (req, res) => {
+  res.sendFile(__dirname + '/socket.io.min.js');
+});
+
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
   log.warn("Unable to find API - " + fullUrl);
@@ -179,6 +194,6 @@ app.use(function (req, res, next) {
 // For tracing in AWS X-Ray
 app.use(AWSXRay.express.closeSegment());
 
-app.listen(port, function () {
-  console.log("Listening at port " + port);
+server.listen(port, function () {
+  log.info("Listening at port " + port);
 });
