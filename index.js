@@ -202,7 +202,6 @@ io.on("connection", (socket) => {
   });
 });
 app.get("/socketio", (req, res) => {
-  //res.sendFile(__dirname + '/socketio.html');
   var socket = io_client.connect("http://localhost:" + port, {
     transports: ["websocket"],
     upgrade: false,
