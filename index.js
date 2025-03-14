@@ -232,6 +232,11 @@ app.get("/load-test-stats", async function (req, res) {
     <h1>Load Test Statistics</h1>
     ${envVar}`);
 });
+app.get("/reset-load-test-stats", async function (req, res) {
+  process.env["REQUEST_COUNT"] = 0;
+  process.env["SOCKET_IO_TOTAL_USERS"] = 0;
+  res.status(200).send("Ok");
+});
 
 app.use(function (req, res, next) {
   var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
