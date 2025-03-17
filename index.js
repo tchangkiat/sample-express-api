@@ -204,7 +204,6 @@ io.on("connection", (socket) => {
 app.get("/socketio", (req, res) => {
   var socket = io_client.connect("http://localhost:" + port, {
     transports: ["websocket"],
-    upgrade: false,
   });
   res.status(200).send("Ok");
 });
