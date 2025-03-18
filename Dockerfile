@@ -1,30 +1,40 @@
-#FROM node:lts-alpine
-FROM public.ecr.aws/docker/library/node:18.20-alpine
-LABEL name="sample-express-api"
+FROM node:18.17.1-alpine3.18
 
-# Change working directory
+# Install necessary system libraries using apt-get
+RUN apk update && apk add --no-cache \
+    python3 \
+    g++ \
+    make \
+    pkgconf \
+    cairo-dev \
+    pango-dev \
+    pixman-dev \
+    libpng-dev \
+    curl \
+    shadow
+
+# Remove /etc/timezone, create /app directory, and install pm2 globally
+RUN rm -rf /etc/timezone && \
+    mkdir /app && \
+    npm install pm2 -g && \
+    mkdir -p /app/Server
+
+COPY . /app/
+
+RUN useradd -m app && \
+    chown -R app:app /app && \
+    chmod -R 760 /app
+    
+RUN apk del curl \
+    shadow
+    
+USER app
+
+### Install modules for PM2
+RUN pm2 install pm2-prom-module
+
 WORKDIR "/app"
 
-# Update packages
-RUN apk update
+RUN npm install
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Install npm production packages \
-RUN npm install --production
-
-# Install pm2
-RUN npm install pm2 -g
-
-COPY . .
-
-ENV NODE_ENV="production"
-ENV PORT=8000
-
-EXPOSE 8000
-
-USER node
-
-# CMD ["pm2-runtime", "start", "ecosystem.config.js"]
 CMD ["pm2", "start", "index.js", "--no-daemon", "--kill-timeout", "60000", "-i", "4", "--max-memory-restart", "4096M", "--node-args='--max-old-space-size=4096'"]
