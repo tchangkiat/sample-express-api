@@ -125,7 +125,7 @@ app.get("/req", async function (req, res) {
     });
 });
 
-app.get("/log/:message?", async function (req, res) {
+app.get("/log/{:message}", async function (req, res) {
   if (req.params.message) {
     log.info(req.params.message);
     res.status(200).send("Logged: " + req.params.message);
