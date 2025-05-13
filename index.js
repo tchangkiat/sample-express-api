@@ -70,7 +70,7 @@ app.get("/", async function (req, res) {
     },
     {
       key: "CPU",
-      value: `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${process.arch} | ${cpu.cores} logical cores | ${cpu.physicalCores} physical cores)`,
+      value: `${cpu.manufacturer} ${cpu.brand} ${cpu.speed} GHz (${process.arch})`,
     },
     { key: "Memory", value: `${mem.total / 1000000000} GB` },
     { key: "Graphic", value: graphicsInfo },
